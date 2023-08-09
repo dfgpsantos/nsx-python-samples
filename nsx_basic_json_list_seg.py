@@ -7,9 +7,9 @@ requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 from requests.auth import HTTPBasicAuth
 
-basic = HTTPBasicAuth('admin', 'VMware1!VMware1!')
+basic = HTTPBasicAuth('userhere', 'passwordhere')
 
-response = requests.get('https://nsx-41.corp.local/policy/api/v1/infra/segments', auth=basic, verify=False)
+response = requests.get('https://NSXMANAGERHERE/policy/api/v1/infra/segments', auth=basic, verify=False)
 
 print(response.status_code)
 
