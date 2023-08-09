@@ -21,9 +21,9 @@ from vmware.vapi.bindings.stub import ApiClient
 from urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
-NSX='nsx-41.corp.local'
-NSXPASS='VMware1!VMware1!'
-NSXUSER='admin'
+NSX='yournsxhere'
+NSXPASS='yourpasswordhere'
+NSXUSER='youruserhere'
 
 def get_nsx_client(ip, username=NSXUSER, password=NSXPASS,
                    is_policy=False):
