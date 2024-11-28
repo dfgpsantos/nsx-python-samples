@@ -2,6 +2,8 @@
 Python Script to export Group Effective IP Memebers
 '''
 
+import getpass
+
 import requests
 
 import json
@@ -12,8 +14,6 @@ from urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 from requests.auth import HTTPBasicAuth
-
-basic = HTTPBasicAuth('youruserhere', 'yourpasswordhere')
 
 nsxmgr = 'yournsxmanagerhere'
 
@@ -50,6 +50,15 @@ class Group:
     return self.ipmembers
 #    return self.ipmembers
 
+
+
+nsxuser = input("Username:")
+
+nsxpass = getpass.getpass("Password")
+
+
+basic = HTTPBasicAuth(nsxuser, nsxpass)
+
 cursorpage = ''
 
 printresults = True
@@ -83,17 +92,3 @@ while printresults:
   else:
     printresults = False
     myfile.close()
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
