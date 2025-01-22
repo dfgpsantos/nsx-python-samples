@@ -15,11 +15,13 @@ requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 from requests.auth import HTTPBasicAuth
 
-nsxmgr = 'yournsxmanagerhere'
+nsxmgr = 'localhost'
 
 headers = {'Content-Type': 'application/json', 'Accept': 'application/json'} 
 
 exportfile = 'vmlist.csv'
+
+logfile = 'counter.log'
 
 true = "true"
 
@@ -60,23 +62,53 @@ class Search:
 
 
 
-nsxuser = input("Username:")
+nsxuser = input("Username: ")
 #nsxuser = 'userhere'
 
-nsxpass = getpass.getpass("Password")
+nsxpass = getpass.getpass("Password: ")
 #nsxpass = 'passwordhere'
 
 basic = HTTPBasicAuth(nsxuser, nsxpass)
 
 cursorpage = ''
 
+cursorcheck = input('Do you have a cursor? (Y/N)')
+
+cursorstatus = cursorcheck.lower()
+
+if cursorstatus == 'y' or cursorstatus == 'yes':
+
+  cursorpage = input('Please provide the cursor reference: ')
+
 printresults = True
 
-myfile = open(exportfile, "w")
+filecheckstatus = False
 
-myfile.write('VM Name;Interface Count;Interface Names\n')
+while filecheckstatus != True:
 
-myfile.close()
+  filecheck = input('Do you want to append the results to the existent file? (Y/N)')
+
+  if filecheck == 'y' or filecheck == 'yes':
+
+    myfile = open(exportfile, "a")
+    filecheckstatus = True
+
+  elif filecheck == 'n' or filecheck == 'no':
+
+    myfile = open(exportfile, "w")
+    myfile.write('VM Name;Interface Count;Interface Names\n')
+    filecheckstatus = True
+
+  else:
+    print('Please provide a valid Y/N answer')
+
+
+
+
+vmcounter = 0
+trackfile = open(logfile, "w")
+
+
 
 while printresults:
   
@@ -95,6 +127,13 @@ while printresults:
     thisvm = Search(vmexternalid=virtual_machine_external_id,vmhostid=virtual_machine_host_id,vmidonhost=virtual_machine_local_id_on_host)
     vm_results = thisvm.vm_info()
     myfile.write('{};'.format(virtual_machine_display_name))
+    vmcounter += 1
+    if 'cursor' in results:
+      nextcursor = results['cursor']
+    else:
+      nextcursor = ''
+    trackfile.write('This is the request {};VM Name {};Current cursor is {};Next cursor is {}\n'.format(vmcounter,virtual_machine_display_name,cursorpage,nextcursor))
+
     if len(vm_results) != 0:
       vm_int_results = vm_results[0]
       vm_int_count = vm_int_results['related'][0]['result_count']
@@ -115,18 +154,6 @@ while printresults:
 
   if 'cursor' in results:
     cursorpage = results['cursor']
+    print('The current cursor is: {}'.format(cursorpage))
   else:
     printresults = False
-
-
-  
-
-
-
-
-
-
-
-
-
-
